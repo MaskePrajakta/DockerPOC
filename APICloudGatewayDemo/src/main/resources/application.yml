@@ -1,0 +1,21 @@
+spring:
+ application:
+  name: api-gateway
+cloud: 
+ gateway:
+      routes:
+      - id: eureka-clientEmp
+        uri: http://localhost:8085/
+        predicates:
+          -Path=/emp/**
+      - id: eureka-clientAdd
+        uri: http://localhost:8086/
+        predicates:
+          -Path=/add/**
+    
+ eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8084/eureka

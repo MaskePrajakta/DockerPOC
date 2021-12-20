@@ -1,0 +1,59 @@
+version: '3.7'
+services:
+  
+  eurekaserver:
+   
+    image: eurekaserver:latest
+    ports:
+      - "8084:8084"
+    
+  employeemicroservice:
+    
+    image: employeemicroservice:latest
+    ports:
+      - "8085:8085"
+    depends_on:
+      
+      - eurekaserver
+      
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8084/eureka
+    links:
+      - mongo 
+          
+     
+  addressmicroservice:
+    
+    image: addressmicroservice:latest
+    ports:
+      - "8086:8086"
+    depends_on:
+      
+      - eurekaserver
+     
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8084/eureka
+    
+    links:
+      - mongo   
+      
+  
+  apigatway:
+     image: apigatway:latest
+     ports:
+      - "8080:8080"
+     depends_on: 
+      
+      - eurekaserver
+      - employeemicroservice
+      - addressmicroservice
+     environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaserver:8084/eureka
+   
+  mongo:
+    image: mongo:latest
+    container_name: "resources_mongo_1"
+    ports:
+      - 27017:27017
+
+
